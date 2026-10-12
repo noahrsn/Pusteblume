@@ -92,7 +92,11 @@ input, textarea, select, button { font-family: inherit; }
 
 /* ---------- Hintergrund ---------- */
 
-.bg, .bg-veil, .bg-start { position: fixed; inset: 0; z-index: 0; }
+.bg, .bg-veil, .bg-start {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 0;
+  /* feste Höhe statt inset:0 – sonst werden die Bilder beim Ein-/Ausfahren
+     der Adressleiste auf dem Handy ständig neu skaliert */
+}
 .bg { background: url('../img/bg-aquarell-rosa.webp') center / cover no-repeat; }
 .bg-veil { background: rgba(247, 242, 246, 0.68); }
 .bg-start { pointer-events: none; will-change: opacity; }
@@ -108,7 +112,7 @@ input, textarea, select, button { font-family: inherit; }
 
 .page {
   position: relative; z-index: 1;
-  min-height: 100vh; min-height: 100svh;
+  min-height: 100vh;
   display: flex; flex-direction: column;
 }
 main { flex: 1; }
@@ -164,6 +168,7 @@ main { flex: 1; }
 }
 
 @media (max-width: 860px) {
+  .site-header { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgba(247, 241, 247, 0.96); }
   .site-header__inner { padding-top: 8px; padding-bottom: 8px; }
   .site-header__logo { opacity: 1 !important; }
   .site-header__logo img { height: 38px; }
@@ -177,13 +182,9 @@ main { flex: 1; }
     padding: 12px var(--gutter) calc(32px + env(safe-area-inset-bottom));
     background: rgba(246, 240, 246, 0.98);
     overflow-y: auto; overscroll-behavior: contain;
-    visibility: hidden; opacity: 0; transform: translateY(-8px);
-    transition: opacity .25s ease, transform .25s ease, visibility 0s linear .25s;
+    display: none;
   }
-  .nav.is-open {
-    visibility: visible; opacity: 1; transform: none;
-    transition: opacity .25s ease, transform .25s ease;
-  }
+  .nav.is-open { display: flex; animation: nav-in .22s ease; }
   .nav a {
     display: flex; align-items: center; gap: 12px;
     padding: 16px 4px; font-size: 19px; border-bottom: 1px solid var(--line);
@@ -193,6 +194,8 @@ main { flex: 1; }
     content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--dot); flex: none;
   }
 }
+
+@keyframes nav-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
 
 /* ---------- Typografie & Bausteine ---------- */
 
@@ -260,7 +263,7 @@ main { flex: 1; }
 /* ---------- Startseite ---------- */
 
 .hero {
-  min-height: calc(100vh - var(--header-h)); min-height: calc(100svh - var(--header-h));
+  min-height: calc(100vh - var(--header-h));
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 12px; padding: 24px 0 60px; position: relative; overflow: hidden;
 }
@@ -530,6 +533,7 @@ main { flex: 1; }
 .site-footer__links { display: flex; gap: 6px 22px; flex-wrap: wrap; }
 
 @media (max-width: 860px) {
+  .site-footer { -webkit-backdrop-filter: none; backdrop-filter: none; background: #d9d1dc; }
   .site-footer__inner {
     flex-direction: column; align-items: flex-start; gap: 14px;
     padding: 28px var(--gutter) calc(28px + env(safe-area-inset-bottom));

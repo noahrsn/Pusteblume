@@ -84,7 +84,9 @@ function serveStatic(req, res, urlPath) {
       'Content-Type': TYPES[ext] || 'application/octet-stream',
       'Content-Length': stat.size,
       'Last-Modified': stat.mtime.toUTCString(),
-      'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=604800',
+      // HTML, CSS und JS bei jedem Aufruf kurz prüfen lassen (304, wenn unverändert),
+      // damit Änderungen sofort ankommen. Bilder und Schriften 7 Tage cachen.
+      'Cache-Control': ['.html', '.css', '.js'].includes(ext) ? 'no-cache' : 'public, max-age=604800',
     };
     if (req.headers['if-modified-since'] &&
         new Date(req.headers['if-modified-since']) >= new Date(stat.mtime.toUTCString())) {
