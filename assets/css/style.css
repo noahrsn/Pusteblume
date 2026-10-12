@@ -94,10 +94,16 @@ input, textarea, select, button { font-family: inherit; }
 
 /* ---------- Hintergrund ---------- */
 
-/* Ebenen bewusst über den unteren Rand hinaus ziehen: Auf dem Handy bleibt sonst
-   unter der Browserleiste / dem Home-Indikator ein Streifen frei. */
-.bg, .bg-veil, .bg-start {
+/* iOS 26 Safari zeichnet fixierte Elemente, die bis zum unteren Rand reichen, nicht
+   unter der schwebenden Leiste, sondern füllt dort eine Volltonfarbe (sichtbarer Rand).
+   Workaround: Der fixierte Container ist niedrig (< 50vh) und die Ebenen ragen
+   sichtbar aus ihm heraus – so wird der Hintergrund bis ganz unten gemalt. */
+.bg-fixed {
   position: fixed; top: 0; left: 0; right: 0; z-index: 0;
+  height: 1px; overflow: visible; pointer-events: none;
+}
+.bg, .bg-veil, .bg-start {
+  position: absolute; top: 0; left: 0; right: 0;
   height: calc(100vh + 160px); height: calc(100lvh + 160px);
 }
 .bg { background: url('../img/bg-aquarell-rosa.webp') center / cover no-repeat; }
@@ -267,9 +273,12 @@ main { flex: 1; }
 /* ---------- Startseite ---------- */
 
 .hero {
-  min-height: calc(100vh - var(--header-h)); min-height: calc(100svh - var(--header-h));
+  /* Volle Bildschirmhöhe inkl. Bereich hinter der Browserleiste (lvh), damit darunter
+     nichts hervorschaut; der Inhalt wird per padding im sichtbaren Bereich (svh) zentriert. */
+  min-height: calc(100vh - var(--header-h)); min-height: calc(100lvh - var(--header-h));
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 12px; padding: 24px 0 60px; position: relative; overflow: hidden;
+  gap: 12px; padding: 24px 0 60px; padding-bottom: calc(60px + 100lvh - 100svh);
+  position: relative; overflow: hidden;
 }
 .hero__content {
   display: flex; flex-direction: column; align-items: center; gap: 20px;
@@ -292,9 +301,9 @@ main { flex: 1; }
 /* Handy: weniger Rand, Bild und Logo füllen die Breite besser aus */
 @media (max-width: 640px) {
   .hero__content { width: 100%; padding: 8px 10px; gap: 16px; }
-  .hero__art { aspect-ratio: 100 / 74; }
+  .hero__art { aspect-ratio: 100 / 79; }
   .hero__painting { left: 41%; width: 55%; }
-  .hero__logo { top: 41%; width: 100%; }
+  .hero__logo { top: 45%; width: 100%; }
 }
 .hero__scroll {
   font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted);
