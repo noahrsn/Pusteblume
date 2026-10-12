@@ -1,4 +1,4 @@
-# Pusteblume – Website
+﻿# Pusteblume – Website
 
 Statische Website (HTML/CSS/JS, kein Build-Schritt), entstanden aus einem Claude-Design-Prototyp.
 
@@ -18,6 +18,7 @@ Statische Website (HTML/CSS/JS, kein Build-Schritt), entstanden aus einem Claude
     ├── css/style.css     Gestaltung (Farben, Schriften, Layout)
     ├── js/config.js      Einstellungen: Termine, Kontaktformular
     ├── js/main.js        Verhalten: Menü, Scroll-Effekt, Termine, Formular
+    ├── fonts/            Schriften (lokal, DSGVO-freundlich)
     └── img/              Bilder (WebP, für das Web verkleinert)
 ```
 
