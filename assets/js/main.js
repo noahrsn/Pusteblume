@@ -43,9 +43,13 @@
 
     var clamp = function (v) { return Math.min(1, Math.max(0, v)); };
 
+    // Feste Bezugshöhe: Auf dem Handy ändert sich innerHeight beim Scrollen,
+    // weil die Adressleiste ein- und ausfährt – das würde den Effekt ruckeln lassen.
+    var h = window.innerHeight || 800;
+    var lastWidth = window.innerWidth;
+
     var update = function () {
       ticking = false;
-      var h = window.innerHeight || 800;
       var y = window.scrollY;
       var p = clamp(y / (h * 0.6));
       var q = clamp(y / (h * 0.9));
@@ -63,7 +67,12 @@
     window.addEventListener('scroll', function () {
       if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
     }, { passive: true });
-    window.addEventListener('resize', update);
+    window.addEventListener('resize', function () {
+      if (window.innerWidth === lastWidth) return; // nur Adressleiste – ignorieren
+      lastWidth = window.innerWidth;
+      h = window.innerHeight || 800;
+      update();
+    });
     update();
   }
 

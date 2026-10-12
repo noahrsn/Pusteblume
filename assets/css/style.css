@@ -95,11 +95,11 @@ input, textarea, select, button { font-family: inherit; }
 .bg, .bg-veil, .bg-start { position: fixed; inset: 0; z-index: 0; }
 .bg { background: url('../img/bg-aquarell-rosa.webp') center / cover no-repeat; }
 .bg-veil { background: rgba(247, 242, 246, 0.68); }
-.bg-start { pointer-events: none; }
+.bg-start { pointer-events: none; will-change: opacity; }
 .bg-start::before, .bg-start::after { content: ""; position: absolute; inset: 0; }
 .bg-start::before {
-  background: url('../img/bg-aquarell-orange.webp') center / cover no-repeat;
-  filter: hue-rotate(-10deg) saturate(0.85) brightness(1.04);
+  /* Farbfilter ist bereits ins Bild eingerechnet – spart Rechenarbeit beim Scrollen */
+  background: url('../img/bg-start.webp') center / cover no-repeat;
 }
 .bg-start::after {
   background: radial-gradient(ellipse at 50% 55%,
@@ -126,7 +126,7 @@ main { flex: 1; }
   min-height: var(--header-h);
   display: flex; align-items: center; justify-content: space-between; gap: 24px;
 }
-.site-header__logo { display: flex; align-items: center; flex: none; transition: opacity .3s; }
+.site-header__logo { display: flex; align-items: center; flex: none; }
 .site-header__logo img { height: 44px; width: auto; }
 
 .nav { display: flex; align-items: center; gap: 2px 26px; }
@@ -290,12 +290,11 @@ main { flex: 1; }
 .hero__scroll::after {
   content: ""; width: 9px; height: 9px; margin-top: 2px;
   border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
-  transform: rotate(45deg); animation: hint 2.2s ease-in-out infinite;
+  transform: rotate(45deg);
 }
-@keyframes hint { 0%, 100% { transform: translateY(0) rotate(45deg); } 50% { transform: translateY(5px) rotate(45deg); } }
 
 @media (max-width: 600px) {
-  .hero { min-height: calc(92svh - var(--header-h)); padding: 16px 0 36px; }
+  .hero { padding: 16px 0 40px; }
   .hero__content { width: 100%; padding: 0 12px; margin-top: 0; gap: 28px; }
   .hero__art { aspect-ratio: 100 / 84; }
   .hero__painting { left: 41%; width: 55%; padding: 1.4%; }
@@ -339,7 +338,7 @@ main { flex: 1; }
 
 /* Unterhalb von 920px werden aus den Kreisen abgerundete Karten */
 @media (max-width: 920px) {
-  .offers { padding-top: 32px; padding-bottom: 72px; }
+  .offers { padding-top: 64px; padding-bottom: 72px; }
   .offers__title { margin-bottom: 32px; }
   .offers__grid { gap: 24px; align-items: stretch; }
   .offer { width: calc(50% - 12px); max-width: 440px; aspect-ratio: auto; border-radius: 28px; }
@@ -542,6 +541,5 @@ main { flex: 1; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .hero__content { will-change: auto; }
-  .hero__scroll::after { animation: none; }
   .nav, .nav a::after, .nav-toggle span { transition: none !important; }
 }
