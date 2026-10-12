@@ -1,6 +1,7 @@
-﻿# Pusteblume – Website
+# Pusteblume – Website
 
-Statische Website (HTML/CSS/JS, kein Build-Schritt), entstanden aus einem Claude-Design-Prototyp.
+Website für pusteblume-kt.de: statische Seiten (HTML/CSS/JS, kein Build-Schritt) plus ein kleiner
+Node-Server, der die Seiten ausliefert und das Kontaktformular über [Resend](https://resend.com) verschickt.
 
 ## Struktur
 
@@ -14,38 +15,82 @@ Statische Website (HTML/CSS/JS, kein Build-Schritt), entstanden aus einem Claude
 ├── kontakt.html
 ├── impressum.html
 ├── datenschutz.html
-└── assets/
-    ├── css/style.css     Gestaltung (Farben, Schriften, Layout)
-    ├── js/config.js      Einstellungen: Termine, Kontaktformular
-    ├── js/main.js        Verhalten: Menü, Scroll-Effekt, Termine, Formular
-    ├── fonts/            Schriften (lokal, DSGVO-freundlich)
-    └── img/              Bilder (WebP, für das Web verkleinert)
+├── assets/
+│   ├── css/style.css     Gestaltung (Farben, Schriften, Layout)
+│   ├── js/config.js      Einstellungen: Termine, Kontaktformular
+│   ├── js/main.js        Verhalten: Menü, Scroll-Effekt, Termine, Formular
+│   ├── fonts/            Schriften (lokal, DSGVO-freundlich)
+│   └── img/              Bilder (WebP, für das Web verkleinert)
+├── server/server.js      Webserver + Kontaktformular-API (Node.js ≥ 18, keine Abhängigkeiten)
+├── Dockerfile
+├── docker-compose.yml
+└── .env.example          Vorlage für die Zugangsdaten
 ```
 
-Die HTML-Seiten liegen bewusst direkt im Hauptordner: So ist `index.html` beim Hoster
-automatisch die Startseite und die Adressen bleiben kurz (z. B. `/kontakt.html`).
+Der Server liefert nur die HTML-Seiten im Hauptordner und `assets/` aus – `server/`, `.env`,
+`README.md` und `.git` sind von außen nicht erreichbar.
 
-## Lokal ansehen
+## Lokal starten
 
 ```
-python -m http.server 8000
+node server/server.js
 ```
-Dann http://localhost:8000 öffnen.
+Dann http://localhost:3000 öffnen. Ohne `RESEND_API_KEY` funktioniert alles außer dem E-Mail-Versand.
 
-## Veröffentlichen
+## Einrichtung auf dem Homeserver
 
-Den kompletten Projektordner (ohne `.git` und `.idea`) bei einem beliebigen Webhoster hochladen (z. B. per FTP) –
-oder kostenlos über Netlify, Cloudflare Pages oder GitHub Pages.
+### 1. Resend vorbereiten (einmalig)
+
+1. Bei https://resend.com registrieren.
+2. **Domains → Add Domain** → `pusteblume-kt.de`, Region **EU (Ireland)** wählen.
+3. Die angezeigten DNS-Einträge (DKIM, SPF/MX für `send.pusteblume-kt.de`, optional DMARC) beim
+   Domain-Anbieter eintragen und in Resend auf **Verify** klicken.
+4. **API Keys → Create API Key** mit „Sending access“, beschränkt auf `pusteblume-kt.de`.
+5. Unter **Settings → Legal / DPA** den Vertrag zur Auftragsverarbeitung abschließen (für die DSGVO nötig).
+
+### 2. Server starten
+
+```
+cp .env.example .env      # RESEND_API_KEY eintragen
+docker compose up -d --build
+```
+
+Ohne Docker geht es auch direkt mit Node (z. B. als systemd-Dienst):
+`RESEND_API_KEY=… TRUST_PROXY=1 node server/server.js`
+
+### 3. Reverse Proxy
+
+Die Domain auf `http://127.0.0.1:3000` weiterleiten, z. B. mit Caddy (HTTPS automatisch):
+
+```
+pusteblume-kt.de, www.pusteblume-kt.de {
+    reverse_proxy 127.0.0.1:3000
+}
+```
+
+oder nginx:
+
+```
+location / {
+    proxy_pass http://127.0.0.1:3000;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+}
+```
+
+### Aktualisieren
+
+Nach Änderungen an der Website: `git pull && docker compose up -d --build`
 
 ## Inhalte pflegen
 
-| Was                          | Wo                                   |
-|------------------------------|--------------------------------------|
-| Freie Termine                | `assets/js/config.js` → `termine`           |
-| Kontaktformular (E-Mail-Versand) | `assets/js/config.js` → `web3formsKey`  |
-| Preise                       | `preise.html`                        |
-| Texte                        | jeweilige `.html`-Datei              |
-| Impressum / Datenschutz      | `impressum.html`, `datenschutz.html` (gelb markierte Platzhalter ausfüllen!) |
-| Farben, Abstände             | `assets/css/style.css` (oben unter `:root`) |
+| Was                     | Wo                                              |
+|-------------------------|-------------------------------------------------|
+| Freie Termine           | `assets/js/config.js` → `termine`               |
+| Empfänger/Absender der Formular-Mails | `.env` → `MAIL_TO`, `MAIL_FROM`   |
+| Preise                  | `preise.html`                                   |
+| Texte                   | jeweilige `.html`-Datei                         |
+| Impressum / Datenschutz | `impressum.html`, `datenschutz.html`            |
+| Farben, Abstände        | `assets/css/style.css` (oben unter `:root`)     |
 
 Bilder liegen optimiert in `assets/img/` (WebP, max. ~1600 px). Neue Bilder vorher verkleinern.

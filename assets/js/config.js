@@ -10,15 +10,11 @@ window.PUSTEBLUME = {
   /*
    * Kontaktformular
    * ---------------
-   * Damit Nachrichten direkt per E-Mail ankommen, wird ein kostenloser
-   * Formular-Dienst benötigt, z. B. https://web3forms.com
-   *   1. Dort mit pusteblume.kt@gmail.com einen "Access Key" anfordern.
-   *   2. Den Key unten bei web3formsKey eintragen.
-   * Solange kein Key eingetragen ist, öffnet das Formular beim Absenden
-   * das E-Mail-Programm der Besucherin / des Besuchers mit vorausgefüllter Nachricht.
+   * Das Formular schickt die Nachricht an den eigenen Server (server/server.js),
+   * der sie über Resend an das Pusteblume-Postfach weiterleitet.
+   * Empfänger und Absender werden dort eingestellt (siehe README).
    */
-  web3formsKey: '',
-  email: 'pusteblume.kt@gmail.com',
+  kontaktApi: '/api/kontakt',
 
   /*
    * Freie Termine (freies Malen)

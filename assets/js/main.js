@@ -128,10 +128,12 @@
       thanks.querySelector('h2').focus();
     };
 
+    var errorMsg = errorEl.querySelector('.form__error-msg');
+    var defaultError = errorMsg.textContent;
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       errorEl.hidden = true;
-      if (form.botcheck && form.botcheck.checked) return;
 
       var data = {
         anliegen: form.anliegen.value,
@@ -139,34 +141,25 @@
         email: form.email.value.trim(),
         telefon: form.telefon.value.trim(),
         nachricht: form.nachricht.value.trim(),
+        datenschutz: form.datenschutz.checked,
+        botcheck: form.botcheck.checked,
       };
 
-      if (!cfg.web3formsKey) {
-        var body = 'Anliegen: ' + data.anliegen + '\nName: ' + data.name + '\nE-Mail: ' + data.email +
-          (data.telefon ? '\nTelefon: ' + data.telefon : '') + '\n\n' + data.nachricht;
-        window.location.href = 'mailto:' + cfg.email +
-          '?subject=' + encodeURIComponent('Anfrage: ' + data.anliegen) +
-          '&body=' + encodeURIComponent(body);
-        return;
-      }
-
       submitBtn.disabled = true;
-      fetch('https://api.web3forms.com/submit', {
+      fetch(cfg.kontaktApi || '/api/kontakt', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(Object.assign({
-          access_key: cfg.web3formsKey,
-          subject: 'Pusteblume Website: ' + data.anliegen,
-          from_name: 'Pusteblume Website',
-          replyto: data.email,
-        }, data)),
+        body: JSON.stringify(data),
       })
-        .then(function (res) { return res.json(); })
+        .then(function (res) {
+          return res.json().catch(function () { return {}; });
+        })
         .then(function (json) {
-          if (!json.success) throw new Error(json.message);
+          if (!json.ok) throw { userMessage: json.error };
           showThanks();
         })
-        .catch(function () {
+        .catch(function (err) {
+          errorMsg.textContent = (err && err.userMessage) || defaultError;
           errorEl.hidden = false;
         })
         .then(function () { submitBtn.disabled = false; });
