@@ -35,7 +35,11 @@
   /* ---------- Startseite: Scroll-Effekt ---------- */
 
   var hero = document.querySelector('.hero__content');
-  if (hero) {
+  var nativeScrollAnim = window.CSS && CSS.supports && CSS.supports('animation-timeline: scroll()');
+  if (hero && nativeScrollAnim) {
+    // Animation läuft komplett in CSS (siehe .scroll-anim in style.css)
+    document.documentElement.classList.add('scroll-anim');
+  } else if (hero) {
     var heroScroll = document.querySelector('.hero__scroll');
     var headerLogo = document.querySelector('.site-header__logo');
     var startBg = document.querySelector('.bg-start');
@@ -43,16 +47,20 @@
 
     var clamp = function (v) { return Math.min(1, Math.max(0, v)); };
 
+    // Höhe nur bei Breitenänderung neu messen: Das Ein-/Ausblenden der mobilen
+    // Adressleiste ändert innerHeight und ließe die Animation sonst springen.
+    var h = window.innerHeight || 800;
+    var w = window.innerWidth;
+
     var update = function () {
       ticking = false;
-      var h = window.innerHeight || 800;
       var y = window.scrollY;
       var p = clamp(y / (h * 0.6));
       var q = clamp(y / (h * 0.9));
       var ease = p * p * (3 - 2 * p);
 
       if (!reduceMotion) {
-        hero.style.transform = 'translateY(' + (-ease * 260) + 'px) scale(' + (1 - ease * 0.08) + ')';
+        hero.style.transform = 'translate3d(0,' + (-ease * 260) + 'px,0) scale(' + (1 - ease * 0.08) + ')';
       }
       hero.style.opacity = 1 - ease;
       if (heroScroll) heroScroll.style.opacity = 1 - ease;
@@ -63,7 +71,12 @@
     window.addEventListener('scroll', function () {
       if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
     }, { passive: true });
-    window.addEventListener('resize', update);
+    window.addEventListener('resize', function () {
+      if (window.innerWidth === w) return;
+      w = window.innerWidth;
+      h = window.innerHeight || 800;
+      update();
+    });
     update();
   }
 

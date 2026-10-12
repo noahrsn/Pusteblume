@@ -93,10 +93,15 @@ input, textarea, select, button { font-family: inherit; }
 
 /* ---------- Hintergrund ---------- */
 
-.bg, .bg-veil, .bg-start { position: fixed; inset: 0; z-index: 0; }
+/* Höhe am großen Viewport (lvh) ausrichten: sonst bleibt auf dem Handy unten
+   ein Streifen frei, sobald die Adressleiste beim Scrollen verschwindet. */
+.bg, .bg-veil, .bg-start {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 0;
+  height: 100vh; height: 100lvh;
+}
 .bg { background: url('../img/bg-aquarell-rosa.webp') center / cover no-repeat; }
 .bg-veil { background: rgba(247, 242, 246, 0.68); }
-.bg-start { pointer-events: none; }
+.bg-start { pointer-events: none; will-change: opacity; }
 .bg-start::before, .bg-start::after { content: ""; position: absolute; inset: 0; }
 .bg-start::before {
   background: url('../img/bg-aquarell-orange.webp') center / cover no-repeat;
@@ -284,6 +289,27 @@ main { flex: 1; }
 .hero__scroll {
   font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted);
 }
+
+/* Scroll-Effekt direkt im Browser (läuft ruckelfrei auf dem Compositor-Thread).
+   Die Klasse setzt main.js nur auf der Startseite; ohne Unterstützung übernimmt JS. */
+@supports (animation-timeline: scroll()) {
+  .scroll-anim .hero__content,
+  .scroll-anim .hero__scroll,
+  .scroll-anim .site-header__logo,
+  .scroll-anim .bg-start {
+    animation-timeline: scroll(root);
+    animation-fill-mode: both;
+    animation-duration: auto;
+  }
+  .scroll-anim .hero__content { animation-name: hero-out; animation-timing-function: ease-in-out; animation-range: 0 60vh; }
+  .scroll-anim .hero__scroll { animation-name: fade-out; animation-timing-function: ease-in-out; animation-range: 0 60vh; }
+  .scroll-anim .site-header__logo { animation-name: fade-in; animation-timing-function: ease-in-out; animation-range: 0 60vh; transition: none; }
+  .scroll-anim .bg-start { animation-name: fade-out; animation-timing-function: linear; animation-range: 0 90vh; }
+}
+@keyframes hero-out { to { opacity: 0; transform: translateY(-260px) scale(0.92); } }
+@keyframes hero-fade { to { opacity: 0; } }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 
 
 .offers { max-width: 1080px; margin: 0 auto; padding: 40px var(--gutter) 96px; }
@@ -523,6 +549,7 @@ main { flex: 1; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .hero__content { will-change: auto; }
+  .hero__content { will-change: opacity; }
+  .scroll-anim .hero__content { animation-name: hero-fade; }
   .nav, .nav a::after, .nav-toggle span { transition: none !important; }
 }
