@@ -127,7 +127,7 @@ main { flex: 1; }
   min-height: var(--header-h);
   display: flex; align-items: center; justify-content: space-between; gap: 24px;
 }
-.site-header__logo { display: flex; align-items: center; flex: none; }
+.site-header__logo { display: flex; align-items: center; flex: none; transition: opacity .3s; }
 .site-header__logo img { height: 44px; width: auto; }
 
 .nav { display: flex; align-items: center; gap: 2px 26px; }
@@ -167,7 +167,6 @@ main { flex: 1; }
 @media (max-width: 860px) {
   .site-header { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgba(247, 241, 247, 0.96); }
   .site-header__inner { padding-top: 8px; padding-bottom: 8px; }
-  .site-header__logo { opacity: 1 !important; }
   .site-header__logo img { height: 38px; }
   .nav-toggle { display: block; }
 
@@ -280,30 +279,12 @@ main { flex: 1; }
 .hero__logo { position: absolute; left: 0; top: 34%; width: 92%; }
 .hero__tagline {
   margin: 0; font-weight: 400;
-  font-size: clamp(16px, 2.2vw, 22px); letter-spacing: 0.03em; color: #4f4650; text-align: center;
+  font-size: clamp(15px, 2.2vw, 22px); letter-spacing: 0.03em; color: #4f4650; text-align: center;
 }
-.hero__tagline span { white-space: nowrap; }
 .hero__scroll {
-  display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px 16px;
   font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted);
 }
-.hero__scroll:hover { color: var(--accent); }
-.hero__scroll::after {
-  content: ""; width: 9px; height: 9px; margin-top: 2px;
-  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
-  transform: rotate(45deg);
-}
 
-@media (max-width: 600px) {
-  .hero { padding: 16px 0 40px; }
-  .hero__content { width: 100%; padding: 0 12px; margin-top: 0; gap: 28px; }
-  .hero__art { aspect-ratio: 100 / 84; }
-  .hero__painting { left: 41%; width: 55%; padding: 1.4%; }
-  .hero__logo { top: 45%; width: 98%; }
-  .hero__tagline { line-height: 1.5; }
-  .hero__tagline .sep { display: none; }
-  .hero__tagline span { display: block; }
-}
 
 .offers { max-width: 1080px; margin: 0 auto; padding: 40px var(--gutter) 96px; }
 .offers__title {
