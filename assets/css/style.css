@@ -93,19 +93,14 @@ input, textarea, select, button { font-family: inherit; }
 
 /* ---------- Hintergrund ---------- */
 
-.bg, .bg-veil, .bg-start {
-  /* Feste Höhe (größter Viewport + Reserve) statt inset:0: Die Bilder werden beim
-     Ein-/Ausfahren der Safari-Leisten nicht neu skaliert, und unten bleibt nie ein Rand. */
-  position: fixed; top: 0; left: 0; width: 100%; z-index: 0;
-  height: calc(100vh + 160px); height: calc(100lvh + 160px);
-}
+.bg, .bg-veil, .bg-start { position: fixed; inset: 0; z-index: 0; }
 .bg { background: url('../img/bg-aquarell-rosa.webp') center / cover no-repeat; }
 .bg-veil { background: rgba(247, 242, 246, 0.68); }
-.bg-start { pointer-events: none; will-change: opacity; }
+.bg-start { pointer-events: none; }
 .bg-start::before, .bg-start::after { content: ""; position: absolute; inset: 0; }
 .bg-start::before {
-  /* Farbfilter ist bereits ins Bild eingerechnet – spart Rechenarbeit beim Scrollen */
-  background: url('../img/bg-start.webp') center / cover no-repeat;
+  background: url('../img/bg-aquarell-orange.webp') center / cover no-repeat;
+  filter: hue-rotate(-10deg) saturate(0.85) brightness(1.04);
 }
 .bg-start::after {
   background: radial-gradient(ellipse at 50% 55%,
@@ -265,7 +260,7 @@ main { flex: 1; }
 /* ---------- Startseite ---------- */
 
 .hero {
-  min-height: calc(100vh - var(--header-h));
+  min-height: calc(100vh - var(--header-h)); min-height: calc(100svh - var(--header-h));
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 12px; padding: 24px 0 60px; position: relative; overflow: hidden;
 }
@@ -299,54 +294,16 @@ main { flex: 1; }
   transform: rotate(45deg);
 }
 
-/* Handy & Tablet: ruhige Startseite ohne Scroll-Animation.
-   Der orange Hintergrund gehört zum Startbereich, scrollt normal mit
-   und läuft unten weich in den rosa Seitenhintergrund aus. */
-@media (max-width: 860px) {
-  .bg-start { display: none; }
-
-  .hero {
-    min-height: calc(100vh - var(--header-h));
-    min-height: calc(100svh - var(--header-h));
-    padding: 28px var(--gutter) 84px; gap: 0; overflow: visible;
-  }
-  .hero::before, .hero::after {
-    content: ""; position: absolute; left: 0; right: 0; top: 0; bottom: -80px; z-index: -1;
-    -webkit-mask-image: linear-gradient(#000 70%, transparent);
-    mask-image: linear-gradient(#000 70%, transparent);
-  }
-  .hero::before { background: url('../img/bg-start.webp') center / cover no-repeat; }
-  .hero::after {
-    background: radial-gradient(ellipse at 50% 45%,
-      rgba(255, 247, 250, 0.72) 0%, rgba(255, 244, 248, 0.45) 55%, rgba(255, 242, 247, 0.3) 100%);
-  }
-
-  .hero__content { width: 100%; max-width: 440px; padding: 0; margin: 0; gap: 0; will-change: auto; }
-  .hero__art { display: flex; flex-direction: column; align-items: center; aspect-ratio: auto; }
-  .hero__painting {
-    position: relative; left: auto; top: auto;
-    width: min(66vw, 300px); padding: 7px;
-    transform: translateX(14%);
-    box-shadow: 0 24px 44px -18px rgba(60, 30, 60, 0.5), 0 5px 14px rgba(60, 30, 60, 0.16);
-  }
-  .hero__logo {
-    position: relative; left: auto; top: auto; z-index: 1;
-    width: min(92vw, 400px); margin-top: -15%;
-  }
-  .hero__tagline { margin-top: 26px; font-size: 17px; line-height: 1.55; }
+@media (max-width: 600px) {
+  .hero { padding: 16px 0 40px; }
+  .hero__content { width: 100%; padding: 0 12px; margin-top: 0; gap: 28px; }
+  .hero__art { aspect-ratio: 100 / 84; }
+  .hero__painting { left: 41%; width: 55%; padding: 1.4%; }
+  .hero__logo { top: 45%; width: 98%; }
+  .hero__tagline { line-height: 1.5; }
   .hero__tagline .sep { display: none; }
   .hero__tagline span { display: block; }
-
-  .hero__scroll { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); }
-
-  /* einmaliges, sanftes Einblenden beim Laden – kostet beim Scrollen nichts */
-  .hero__painting, .hero__logo, .hero__tagline, .hero__scroll { animation: hero-in .9s cubic-bezier(.2, .7, .2, 1) both; }
-  .hero__logo { animation-delay: .15s; }
-  .hero__tagline { animation-delay: .3s; }
-  .hero__scroll { animation-name: hero-in-fade; animation-delay: .7s; }
 }
-@keyframes hero-in { from { opacity: 0; translate: 0 18px; } to { opacity: 1; translate: 0 0; } }
-@keyframes hero-in-fade { from { opacity: 0; } to { opacity: 1; } }
 
 .offers { max-width: 1080px; margin: 0 auto; padding: 40px var(--gutter) 96px; }
 .offers__title {
@@ -586,6 +543,5 @@ main { flex: 1; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .hero__content { will-change: auto; }
-  .hero__painting, .hero__logo, .hero__tagline, .hero__scroll { animation: none !important; }
   .nav, .nav a::after, .nav-toggle span { transition: none !important; }
 }

@@ -34,9 +34,7 @@
 
   /* ---------- Startseite: Scroll-Effekt ---------- */
 
-  // Nur auf größeren Bildschirmen – auf Handy/Tablet ist die Startseite bewusst ruhig.
   var hero = document.querySelector('.hero__content');
-  var desktop = window.matchMedia('(min-width: 861px)');
   if (hero) {
     var heroScroll = document.querySelector('.hero__scroll');
     var headerLogo = document.querySelector('.site-header__logo');
@@ -45,20 +43,9 @@
 
     var clamp = function (v) { return Math.min(1, Math.max(0, v)); };
 
-    // Feste Bezugshöhe: Auf dem Handy ändert sich innerHeight beim Scrollen,
-    // weil die Adressleiste ein- und ausfährt – das würde den Effekt ruckeln lassen.
-    var h = window.innerHeight || 800;
-    var lastWidth = window.innerWidth;
-
-    var reset = function () {
-      [hero, heroScroll, headerLogo, startBg].forEach(function (el) {
-        if (el) { el.style.transform = ''; el.style.opacity = ''; }
-      });
-    };
-
     var update = function () {
       ticking = false;
-      if (!desktop.matches) return;
+      var h = window.innerHeight || 800;
       var y = window.scrollY;
       var p = clamp(y / (h * 0.6));
       var q = clamp(y / (h * 0.9));
@@ -74,18 +61,9 @@
     };
 
     window.addEventListener('scroll', function () {
-      if (!ticking && desktop.matches) { ticking = true; window.requestAnimationFrame(update); }
+      if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
     }, { passive: true });
-    desktop.addEventListener('change', function () {
-      h = window.innerHeight || 800;
-      if (desktop.matches) update(); else reset();
-    });
-    window.addEventListener('resize', function () {
-      if (window.innerWidth === lastWidth) return; // nur Adressleiste – ignorieren
-      lastWidth = window.innerWidth;
-      h = window.innerHeight || 800;
-      update();
-    });
+    window.addEventListener('resize', update);
     update();
   }
 
