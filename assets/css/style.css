@@ -58,7 +58,8 @@
 [hidden] { display: none !important; }
 
 html, body { margin: 0; padding: 0; }
-html { background: #efe5ec; }
+/* Farbe entspricht dem verschleierten Aquarell, falls irgendwo der Untergrund durchscheint */
+html { background: #f3e1e9; }
 html {
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--header-h) + 16px);
@@ -69,7 +70,7 @@ html {
 body {
   font-family: var(--font-body);
   color: var(--text);
-  background: #ece6ef;
+  background: #f3e1e9;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
   line-height: 1.5;
@@ -93,11 +94,11 @@ input, textarea, select, button { font-family: inherit; }
 
 /* ---------- Hintergrund ---------- */
 
-/* Höhe am großen Viewport (lvh) ausrichten: sonst bleibt auf dem Handy unten
-   ein Streifen frei, sobald die Adressleiste beim Scrollen verschwindet. */
+/* Ebenen bewusst über den unteren Rand hinaus ziehen: Auf dem Handy bleibt sonst
+   unter der Browserleiste / dem Home-Indikator ein Streifen frei. */
 .bg, .bg-veil, .bg-start {
   position: fixed; top: 0; left: 0; right: 0; z-index: 0;
-  height: 100vh; height: 100lvh;
+  height: calc(100vh + 160px); height: calc(100lvh + 160px);
 }
 .bg { background: url('../img/bg-aquarell-rosa.webp') center / cover no-repeat; }
 .bg-veil { background: rgba(247, 242, 246, 0.68); }
@@ -115,6 +116,8 @@ input, textarea, select, button { font-family: inherit; }
 .page {
   position: relative; z-index: 1;
   min-height: 100vh;
+  /* viewport-fit=cover: im Querformat nicht unter die Notch rutschen */
+  padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right);
   display: flex; flex-direction: column;
 }
 main { flex: 1; }
@@ -285,6 +288,13 @@ main { flex: 1; }
 .hero__tagline {
   margin: 0; font-weight: 400;
   font-size: clamp(15px, 2.2vw, 22px); letter-spacing: 0.03em; color: #4f4650; text-align: center;
+}
+/* Handy: weniger Rand, Bild und Logo füllen die Breite besser aus */
+@media (max-width: 640px) {
+  .hero__content { width: 100%; padding: 8px 10px; gap: 16px; }
+  .hero__art { aspect-ratio: 100 / 74; }
+  .hero__painting { left: 41%; width: 55%; }
+  .hero__logo { top: 41%; width: 100%; }
 }
 .hero__scroll {
   font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted);
