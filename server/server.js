@@ -109,9 +109,9 @@ function notFound(res) {
 /* ---------- Kontaktformular ---------- */
 
 const ANLIEGEN = [
-  'Kostenloses Infogespräch',
+  'Kostenloses Kennenlerngespräch',
   'Kunsttherapeutisches Coaching',
-  'Freies Malen – Terminanfrage',
+  'Kreative Auszeit – Terminanfrage',
   'Kleinigkeiten zum Verschenken',
   'Sonstiges',
 ];

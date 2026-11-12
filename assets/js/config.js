@@ -17,15 +17,15 @@ window.PUSTEBLUME = {
   kontaktApi: '/api/kontakt',
 
   /*
-   * Freie Termine (freies Malen)
+   * Freie Termine (kreative Auszeit)
    * ----------------------------
    * Ein Eintrag pro Termin. Datum im Format JJJJ-MM-TT.
    * Vergangene Termine werden automatisch ausgeblendet.
    */
   termine: [
-    { datum: '2026-10-17', zeit: '10:00 – 13:00 Uhr', titel: 'Freies Malen in der Gruppe', plaetze: 2 },
-    { datum: '2026-10-23', zeit: '18:00 – 20:30 Uhr', titel: 'Freies Malen am Abend',      plaetze: 1 },
-    { datum: '2026-11-07', zeit: '14:00 – 17:00 Uhr', titel: 'Freies Malen in der Gruppe', plaetze: 3 },
-    { datum: '2026-11-20', zeit: '17:30 – 20:00 Uhr', titel: 'Freies Malen zu Zweit',      plaetze: 1 },
+    { datum: '2026-10-17', zeit: '10:00 – 13:00 Uhr', titel: 'Kreative Auszeit in der Gruppe', plaetze: 2 },
+    { datum: '2026-10-23', zeit: '18:00 – 20:30 Uhr', titel: 'Kreative Auszeit am Abend',      plaetze: 1 },
+    { datum: '2026-11-07', zeit: '14:00 – 17:00 Uhr', titel: 'Kreative Auszeit in der Gruppe', plaetze: 3 },
+    { datum: '2026-11-20', zeit: '17:30 – 20:00 Uhr', titel: 'Kreative Auszeit zu Zweit',      plaetze: 1 },
   ],
 };

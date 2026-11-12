@@ -132,9 +132,9 @@
   var form = document.getElementById('contact-form');
   if (form) {
     var anliegenMap = {
-      info: 'Kostenloses Infogespräch',
+      info: 'Kostenloses Kennenlerngespräch',
       coaching: 'Kunsttherapeutisches Coaching',
-      frei: 'Freies Malen – Terminanfrage',
+      frei: 'Kreative Auszeit – Terminanfrage',
       geschenk: 'Kleinigkeiten zum Verschenken',
     };
     var params = new URLSearchParams(window.location.search);
