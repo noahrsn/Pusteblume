@@ -78,9 +78,23 @@ location / {
 }
 ```
 
+### Variante Homeserver (Proxmox-Container mit nginx, ohne Docker)
+
+So läuft die Seite aktuell: Repo in `/var/www/html`, nginx auf Port 80 (Ziel des Cloudflare Tunnels).
+Einmalig im Container ausführen – installiert Node.js, legt den Dienst `pusteblume` an,
+fragt den Resend-Key ab (gespeichert in `/etc/pusteblume.env`, nicht im Web-Ordner) und stellt
+nginx auf Weiterleitung um:
+
+```
+cd /var/www/html && git pull && bash deploy/setup-server.sh
+```
+
 ### Aktualisieren
 
-Nach Änderungen an der Website: `git pull && docker compose up -d --build`
+- Homeserver-Variante: `cd /var/www/html && git pull && systemctl restart pusteblume`
+  (reine Text-/Bild-/CSS-Änderungen sind nach `git pull` sofort live, der Neustart ist nur
+  für Änderungen an `server/server.js` nötig)
+- Docker-Variante: `git pull && docker compose up -d --build`
 
 ## Inhalte pflegen
 
