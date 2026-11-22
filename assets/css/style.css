@@ -298,6 +298,7 @@ main { flex: 1; }
   margin: 0; font-weight: 400;
   font-size: clamp(15px, 2.2vw, 22px); letter-spacing: 0.03em; color: #4f4650; text-align: center;
 }
+.hero__tagline-sub { display: block; margin-top: 6px; font-family: var(--font-script); font-size: 1.35em; letter-spacing: 0; color: var(--accent); }
 /* Handy: weniger Rand, Bild und Logo füllen die Breite besser aus */
 @media (max-width: 640px) {
   .hero__content { width: 100%; padding: 8px 10px; gap: 16px; }
